@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Vocabulary</title>
+</head>
+<body>
+  <h2>Upload Vocabulary JSON</h2>
+  <input type="file" id="fileInput" accept=".json" />
+  <button id="uploadBtn">Upload</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-database.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRPlWh1slILKg8DWQDOEWXSFsnUK3j1vw",
+      authDomain: "testdatabase-4daf4.firebaseapp.com",
+      databaseURL: "https://testdatabase-4daf4-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "testdatabase-4daf4",
+      storageBucket: "testdatabase-4daf4.appspot.com",
+      messagingSenderId: "743231387214",
+      appId: "1:743231387214:web:166169b25f72616280351f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+
+    uploadBtn.addEventListener('click', () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select a JSON file first!');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const vocabData = JSON.parse(e.target.result);
+
+          // Upload each entry to Firebase
+          Object.keys(vocabData).forEach(key => {
+            const entry = vocabData[key];
+            const newRef = push(ref(db, 'vocabulary'));
+            set(newRef, entry);
+          });
+
+          alert('Upload completed!');
+        } catch (err) {
+          console.error(err);
+          alert('Error parsing JSON file.');
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  </script>
+</body>
+</html>
