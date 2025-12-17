@@ -45,7 +45,7 @@
           // Upload each entry to Firebase under "vocabularyX"
           Object.keys(vocabData).forEach(key => {
             const entry = vocabData[key];
-            const newRef = push(ref(db, 'vocabulary10'));
+            const newRef = push(ref(db, 'vocabulary9'));
             set(newRef, entry);
           });
 
